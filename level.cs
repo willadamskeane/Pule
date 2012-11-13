@@ -11,7 +11,8 @@ public class board : MonoBehaviour {
 	int highScore;
 	string highScoreName;
 	int numLives;
-	Vector2 start;
+	Vector2 start1;
+	int MacArthurgenius;
 
 	void LoadLevel(string text)
 	{
