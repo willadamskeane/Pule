@@ -2,55 +2,71 @@ using UnityEngine;
 using System.Collections;
 using System.IO;
 
-public class board : MonoBehaviour {
+public class level : MonoBehaviour {
 	
-	string fileName;
+	public TextAsset fileName;
+	string levelText;
 	string levelName;
 	int height;
 	int width;
 	int highScore;
 	string highScoreName;
 	int numLives;
-	Vector2 ballStart;
-
-	void LoadLevel(string text)
+	public Vector3 ballStart;
+	GameObject[][] tiles;
+	public GameObject tile;
+	public Camera cam;
+	
+	void Start(){
+		// LoadLevel (fileName.text);	
+	}
+	
+	public void LoadLevel(string text)
 	{
+		levelText=text;
 		char[] chars = text.ToCharArray();
 		string w; string h;
 		width=ToInt(chars[0])*10+ToInt(chars[1]);
 		height=ToInt(chars[2])*10+ToInt(chars[3]);
 		numLives=ToInt(chars[4]);
-
-		for(int j = h-1; j>=0; j--) {
-			for(int i = 0; i<w; i++) {
-				char type = chars[(i*h)+j+5];
-				tiles[i][j].GetComponent<tileScript>().setType(type);
-				if(type == 's'){
-					ballStart = new Vector2(i, j, 0);
+		Init(width,height);
+		for(int j = height-1; j>=0; j--) {
+			for(int i = 0; i<width; i++) {
+				char type = chars[(i*height)+j+5];
+				tiles[i][j].GetComponent<tile>().setType(type);
+				if(type == '8'){
+					ballStart = new Vector3(i, j, 0);
 				}
 			}		
+		}
+		float oSize=width/3;
+		if (height>width){oSize=height/2;}
+		cam.orthographicSize=oSize;
+		cam.transform.position=new Vector3(oSize*1.5f,oSize/1.5f,-10);
 	}
 
 
-	void fwe(int w, int h){
+	public void Init(int w, int h){
 		// initialize tiles array to blank tiles
 		tiles = new GameObject[w][];
 		for(int i = 0; i<w; i++){
 			tiles[i] = new GameObject[h];
 			for(int j = 0; j<h; j++){
 				tiles[i][j] = Instantiate(tile, new Vector3(i, j, 0), new Quaternion(0, 0, 0, 0)) as GameObject;
-				tiles[i][j].GetComponent<tileScript>().board = gameObject;
+				tiles[i][j].GetComponent<tile>().level = gameObject;
 			}
+		}
 	}
 
-	public int ToInt char c){
+	public int ToInt(char c){
 		return ((int) c) - ((int) '0');
 	}
-
+	
+	/*
 	public int GetTileType(Vector3 position){
 		
-		return tiles[(int) position.x][(int) position.y].GetComponent<tileScript>().type;
+		return tiles[(int) position.x][(int) position.y].GetComponent<tile>().type;
 		
 	}
-	
+	*/
 }

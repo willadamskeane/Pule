@@ -45,9 +45,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\ball.cs" />
+     <Compile Include="Assets\Scripts\constants.cs" />
      <Compile Include="Assets\Scripts\level.cs" />
      <Compile Include="Assets\Scripts\main.cs" />
      <Compile Include="Assets\Scripts\tile.cs" />
+     <None Include="Assets\Resources\level.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

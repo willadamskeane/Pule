@@ -16,5 +16,10 @@ xcuserdata
 # svn & cvs
 .svn
 CVS
+<<<<<<< HEAD
 
 # unity noise
+library/*
+temp/*
+=======
+>>>>>>> 58cf7a72d0eeaab161e3ab5f3b920e2eb2cdd0cf
