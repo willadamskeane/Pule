@@ -13,7 +13,7 @@ public class ball : MonoBehaviour {
 		
 		moving=false;
 		transform.localScale=new Vector3(constants.ballSize/1f,constants.ballSize/1f,constants.ballSize/1f);
-		transform.position=new Vector3(transform.position.x,transform.position.y,-constants.ballSize/1f);
+		transform.position=new Vector3(transform.position.x,transform.position.y,-constants.ballSize/1.5f);
 
 	}
 	

@@ -42,6 +42,7 @@ public class main : MonoBehaviour {
     void aim(){
         
 		aiming=true;
+		currentBall.GetComponent<ball>().moving=false;
 		
         Vector3 clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
         Vector3 startPos = currentLevel.ballStart;
@@ -61,7 +62,7 @@ public class main : MonoBehaviour {
         line.GetComponent<LineRenderer>().SetPosition(0,clickPos);
         line.GetComponent<LineRenderer>().SetPosition(1,startPos+(clickPos - startPos).normalized*-length);
        
-        currentBall.collider.enabled=false;
+        // currentBall.collider.enabled=false;
            
     }
 	
@@ -88,4 +89,5 @@ public class main : MonoBehaviour {
 		
 		
 	}
+	
 }
