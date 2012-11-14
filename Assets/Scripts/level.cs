@@ -54,6 +54,7 @@ public class level : MonoBehaviour {
 			for(int j = 0; j<h; j++){
 				tiles[i][j] = Instantiate(tile, new Vector3(i, j, 0), new Quaternion(0, 0, 0, 0)) as GameObject;
 				tiles[i][j].GetComponent<tile>().level = gameObject;
+				tiles[i][j].GetComponent<tile>().cam = cam;
 			}
 		}
 	}

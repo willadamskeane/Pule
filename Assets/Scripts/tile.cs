@@ -7,10 +7,11 @@ public class tile : MonoBehaviour {
 	public Camera cam;
 	char type;
 	bool scoring=false;
+	float scoringTarget;
 	
 	// Use this for initialization
 	void Start () {
-	
+		
 	}
 	
 	// Update is called once per frame
@@ -22,6 +23,7 @@ public class tile : MonoBehaviour {
 		if (type=='3' || type=='4' || type=='5'){
 			renderer.material.mainTexture = (Texture2D)Resources.Load("Tiles/"+type+"_active",typeof(Texture2D));
 			scoring=true;
+			scoringTarget=Time.time+1;
 		}
 	}
 	
@@ -39,7 +41,7 @@ public class tile : MonoBehaviour {
 	void OnGUI(){
 		if (scoring){
 			Vector3 pos = cam.WorldToScreenPoint (transform.position);
-			GUI.Label(new Rect(pos.x,10,Screen.height-pos.y,90),new GUIContent("5"));	
+			GUI.Label(new Rect(pos.x-3,Screen.height-pos.y+10+(scoringTarget/Time.time)*200,20,20),new GUIContent("5"));	
 		}
 	}
 	
