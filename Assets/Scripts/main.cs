@@ -4,7 +4,8 @@ using System.Collections;
 public class main : MonoBehaviour {
 		
 	public GameObject ball;
-	public GameObject currentBall;
+	public GameObject currentBallObject;
+	public ball currentBall;
 	public GameObject cam;
 	level currentLevel;
 	public TextAsset level;
@@ -17,8 +18,8 @@ public class main : MonoBehaviour {
 		
 		currentLevel = cam.GetComponent<level>();
 		currentLevel.LoadLevel(level.text);
-		currentBall=(GameObject)Instantiate(ball,currentLevel.ballStart,new Quaternion(0,0,0,0));
-		
+		currentBallObject=(GameObject)Instantiate(ball,currentLevel.ballStart,new Quaternion(0,0,0,0));
+		currentBall=currentBallObject.GetComponent<ball>();
 	}
 	
 	// Update is called once per frame
@@ -42,7 +43,8 @@ public class main : MonoBehaviour {
     void aim(){
         
 		aiming=true;
-		currentBall.GetComponent<ball>().moving=false;
+		currentBallObject.rigidbody.isKinematic = true; // stop!
+		currentBall.moving=false;
 		
         Vector3 clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
         Vector3 startPos = currentLevel.ballStart;
@@ -54,7 +56,7 @@ public class main : MonoBehaviour {
         	clickPos=startPos+(clickPos - startPos).normalized*5;
         }
        
-        currentBall.transform.position = new Vector3(clickPos.x,clickPos.y,currentBall.transform.position.z);
+        currentBallObject.transform.position = new Vector3(clickPos.x,clickPos.y,currentBall.transform.position.z);
         float length=(clickPos-startPos).magnitude*11.5f;
        
         line.GetComponent<LineRenderer>().SetColors(Color.red, Color.yellow);
@@ -85,7 +87,7 @@ public class main : MonoBehaviour {
 		
 		// We should call a shoot method in ball here, which will apply appropriate force
 		Vector3 force = new Vector3(xspd,yspd,0);
-		currentBall.GetComponent<ball>().shoot(force);
+		currentBall.shoot(force);
 		
 		
 	}

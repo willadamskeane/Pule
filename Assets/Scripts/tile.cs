@@ -34,15 +34,18 @@ public class tile : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other){
-		Activate ();
-		Debug.Log (type);
+		if (other.tag=="Player"){
+			Activate ();
+		}
 	}
 	
 	void OnGUI(){
+		/*
 		if (scoring){
 			Vector3 pos = cam.WorldToScreenPoint (transform.position);
 			GUI.Label(new Rect(pos.x-3,Screen.height-pos.y+10+(scoringTarget/Time.time)*200,20,20),new GUIContent("5"));	
 		}
+		*/
 	}
 	
 }

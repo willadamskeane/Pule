@@ -5,7 +5,7 @@ public class ball : MonoBehaviour {
 	
 	// Use this for initialization
 	
-	Vector3 velocity;
+	// Vector3 velocity;
 	
 	public bool moving;
 	
@@ -20,15 +20,16 @@ public class ball : MonoBehaviour {
 	public void shoot(Vector3 force){
 	
 		moving=true;	
-		velocity=force;
+		// velocity=force;
+		rigidbody.AddForce(force*5,ForceMode.Impulse);
+		
 	}
 	
 	void Update () {
 		
 		// All ball movement here
-		// transform.position=velocity;
 		if (moving){
-			transform.Translate(new Vector3(velocity.x,velocity.y,0));
+			// transform.Translate(new Vector3(velocity.x,velocity.y,0));
 		}
 		
 	} 
