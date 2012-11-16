@@ -16,14 +16,22 @@ public class main : MonoBehaviour {
 	bool aiming=false;
 	bool shooting=false;
 	bool postLevel=false;
+	bool editing=false;
 	
 	Vector3 targetCamPos;
 	
 	public int score;
 	public GUIStyle scoreStyle;
 	
+	Object[] textures;
+	
+	char selectedType;
+	
+	
 	// Use this for initialization
 	void Start () {
+		
+ 		textures = Resources.LoadAll("Tiles", typeof(Texture2D));		
 		
 		currentLevel = cam.GetComponent<level>();
 		currentLevel.LoadLevel(level.text);
@@ -53,7 +61,7 @@ public class main : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		if (!postLevel){
+		if (!postLevel && !editing){
 		    if (aiming){
 	            if (!line.renderer.enabled) line.renderer.enabled=true;
 			    if (Input.GetMouseButtonUp(0)){
@@ -82,6 +90,16 @@ public class main : MonoBehaviour {
 			}
 		}
 		
+		if (editing){
+			if (Input.GetMouseButton(0)){
+				GameObject clicked=GetClickedGameObject();
+				if (clicked)
+				{
+					clicked.GetComponent<tile>().setType(selectedType);
+				}
+			}	
+		}
+		
 		/*
 		if (shooting){
 			targetCamPos=new Vector3(currentBallObject.transform.position.x,currentBallObject.transform.position.y,-10);	
@@ -100,12 +118,35 @@ public class main : MonoBehaviour {
 			// GUI.Label(new Rect(10,10,200,50),);
 		}else{
 			GUI.Label(new Rect(0,0,Screen.width,Screen.height),new GUIContent("You scored "+currentLevel.currentScore.ToString()+" points!"),scoreStyle);				
-			if(GUI.Button(new Rect(0,0,Screen.width,Screen.height+60),new GUIContent("Restart"),scoreStyle)){
+			if(GUI.Button(new Rect(0,0,Screen.width,Screen.height+60),new GUIContent("Click to Restart"),scoreStyle)){
 				postLevel=false;
 				currentLevel = cam.GetComponent<level>();
 				currentLevel.LoadLevel(level.text);
 				Spawn();
 			}
+		}
+		if (editing){
+			if (GUI.Button(new Rect(0, 0, constants.textureButtonSize, constants.textureButtonSize),new GUIContent(">"))){
+				editing=false;
+			}	
+			int x=0;
+			int y=30;
+			for (int i=0;i<textures.Length;i++){
+				if (textures[i].ToString ().Substring(1,1)!="_"){
+					if (GUI.Button(new Rect(x, y, constants.textureButtonSize, constants.textureButtonSize), (Texture)textures[i])){
+						selectedType=textures[i].ToString ().Substring (0,1)[0];
+					}	
+					y+=constants.textureButtonSize;
+					if (y+constants.textureButtonSize>Screen.height){
+						y=0;
+						x+=constants.textureButtonSize;
+					}
+				}
+			}
+		}else{
+			if (GUI.Button(new Rect(0, 0, constants.textureButtonSize, constants.textureButtonSize),new GUIContent("<"))){
+				editing=true;
+			}	
 		}
 		
 	}
@@ -172,6 +213,14 @@ public class main : MonoBehaviour {
 		currentBall.shoot(force);
 		
 		
+	}
+	
+	GameObject GetClickedGameObject() { 
+		// Builds a ray from camera point of view to the mouse position 
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
+		RaycastHit hit; // Casts the ray and get the first game object hit 
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity)) 
+				return hit.transform.gameObject; else return null; 
 	}
 	
 }

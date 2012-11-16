@@ -54,7 +54,7 @@ public class tile : MonoBehaviour {
 	public void Activate(GameObject collidingBallObject,bool explode=false){
 		
 		
-		if ((type=='3' || type=='4' || type=='5' || type=='h') && !activated){
+		if ((type=='0' || type=='3' || type=='4' || type=='5' || type=='h') && !activated){
 			
 			activated=true;
 			renderer.material.mainTexture = (Texture2D)Resources.Load("Tiles/"+type+"_active",typeof(Texture2D));
@@ -155,11 +155,12 @@ public class tile : MonoBehaviour {
 		}
 	}
 	
+	/*
 	void OnTriggerExit(Collider other){
 		if (other.tag=="Player"){
 			Activate (other.gameObject);
 		}
-	}
+	}*/
 	
 	void OnCollisionEnter(Collision other){
 		if (other.collider.tag=="Player"){
