@@ -21,7 +21,7 @@ public class main : MonoBehaviour {
 		currentBallObject=(GameObject)Instantiate(ball,currentLevel.ballStart,new Quaternion(0,0,0,0));
 		currentBall=currentBallObject.GetComponent<ball>();
 		currentBallObject.rigidbody.isKinematic=true;
-		Physics.bounceThreshold=0;
+		Physics.bounceThreshold=0.0f;
 		Time.fixedDeltaTime = 0.005f;
 
 	}

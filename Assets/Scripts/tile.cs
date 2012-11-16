@@ -10,6 +10,11 @@ public class tile : MonoBehaviour {
 	float scoringTarget;
 	float breakAt;
 	
+	public AudioClip arrow;
+	public AudioClip low;
+	public AudioClip med;
+	public AudioClip high;
+	
 	// Use this for initialization
 	void Start () {
 		
@@ -37,6 +42,18 @@ public class tile : MonoBehaviour {
 			renderer.material.mainTexture = (Texture2D)Resources.Load("Tiles/"+type+"_active",typeof(Texture2D));
 			scoring=true;
 			scoringTarget=Time.time+1;
+			switch (type)
+			{
+				case '3':
+					audio.PlayOneShot(low);
+				break;
+				case '4':
+					audio.PlayOneShot(med);
+				break;
+				case '5':
+					audio.PlayOneShot(high);
+				break;
+			}
 		}
 		
 		if(type == '9'){
@@ -67,6 +84,7 @@ public class tile : MonoBehaviour {
 		
 		if (pushForce.magnitude>0)
 		{
+			audio.PlayOneShot(arrow);
 			collidingBallObject.rigidbody.AddRelativeForce (constants.arrowForceMultiplier*pushForce,ForceMode.Impulse);
 		}
 		
