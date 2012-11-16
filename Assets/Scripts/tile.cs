@@ -5,6 +5,7 @@ public class tile : MonoBehaviour {
 	
 	public GameObject level;
 	public Camera cam;
+	public GameObject breakingAnimation;
 	char type;
 	bool scoring=false;
 	float scoringTarget;
@@ -15,6 +16,7 @@ public class tile : MonoBehaviour {
 	public AudioClip low;
 	public AudioClip med;
 	public AudioClip high;
+	public AudioClip breaking;
 	
 	// Use this for initialization
 	void Start () {
@@ -26,7 +28,18 @@ public class tile : MonoBehaviour {
 		
 		if(breakAt>0 && Time.time>breakAt){
 			breakAt=0;
-			setType((char) (((int) '0') + Random.Range (3,5)));
+			int randInt=Random.Range (0,20);
+			char newType='0';
+			if (randInt>10)
+			{
+				newType='3';
+			}else if(randInt>15){
+				newType='4';	
+			}else if(randInt>18){
+				newType='5';
+			}
+			setType(newType);
+						
 		}
 		
 	}
@@ -36,10 +49,14 @@ public class tile : MonoBehaviour {
 		Vector3 pushForce = new Vector3(0,0,0);
 		
 		if (type=='2'){
-			breakAt=Time.time+.2f;
+			breakAt=Time.time+constants.breakDelay;
+			audio.PlayOneShot(breaking);
+			GameObject bricks=(GameObject)Instantiate(breakingAnimation,transform.position,new Quaternion(0,0,0,0));
+			Destroy(bricks, 1);
 		}
 		
-		if (type=='3' || type=='4' || type=='5' && !activated){
+		if ((type=='3' || type=='4' || type=='5' || type=='h') && !activated){
+			
 			activated=true;
 			renderer.material.mainTexture = (Texture2D)Resources.Load("Tiles/"+type+"_active",typeof(Texture2D));
 			scoring=true;
@@ -53,6 +70,9 @@ public class tile : MonoBehaviour {
 					audio.PlayOneShot(med);
 				break;
 				case '5':
+					audio.PlayOneShot(high);
+				break;
+				case 'h':
 					audio.PlayOneShot(high);
 				break;
 			}
@@ -88,6 +108,12 @@ public class tile : MonoBehaviour {
 		{
 			audio.PlayOneShot(arrow);
 			collidingBallObject.rigidbody.AddRelativeForce (constants.arrowForceMultiplier*pushForce,ForceMode.Impulse);
+		}
+		
+		if (type=='i'){
+			Instantiate (collidingBallObject,new Vector3(collidingBallObject.transform.position.x-2,collidingBallObject.transform.position.y+2,collidingBallObject.transform.position.z),new Quaternion(0,0,0,0));
+			setType('0');
+			// collidingBallObject.transform.localScale=new Vector3(constants.ballSize*1.5f,constants.ballSize*1.5f,constants.ballSize*1.5f);
 		}
 		
 		

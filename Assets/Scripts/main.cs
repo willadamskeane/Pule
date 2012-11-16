@@ -11,7 +11,14 @@ public class main : MonoBehaviour {
 	public TextAsset level;
 	public GameObject line;
 	
+	public AudioClip shot;
+	
 	bool aiming=false;
+	bool shooting=false;
+	
+	Vector3 targetCamPos;
+	
+	public GUIStyle scoreStyle;
 	
 	// Use this for initialization
 	void Start () {
@@ -45,16 +52,27 @@ public class main : MonoBehaviour {
 		if (!aiming && (currentLevel.ballStart-currentBallObject.transform.position).magnitude<1){
 			currentBallObject.collider.enabled=true;	
 		}
+		
+		/*
+		if (shooting){
+			targetCamPos=new Vector3(currentBallObject.transform.position.x,currentBallObject.transform.position.y,-10);	
+			cam.transform.Translate ((targetCamPos.x-cam.transform.position.x)*Time.deltaTime,(targetCamPos.y-cam.transform.position.y)*Time.deltaTime,0);
+			Camera.main.orthographicSize=Camera.main.orthographicSize+(6-Camera.main.orthographicSize)*Time.deltaTime;
+		}*/
 
 	}
 	
 	void OnGUI(){
-		GUI.Label(new Rect(10,10,100,20),new GUIContent("Lives Left: "));			
+		GUI.Label(new Rect(10,10,Screen.width,70),new GUIContent("Score "),scoreStyle);
+		// GUI.Label(new Rect(10,10,200,50),);
+		
 	}
 	
     void aim(){
         
 		aiming=true;
+		shooting=false;
+		
 		currentBallObject.rigidbody.isKinematic = true;
 		currentBallObject.collider.enabled=false;
 		currentBall.moving=false;
@@ -82,12 +100,13 @@ public class main : MonoBehaviour {
     }
 	
 	void shoot(){
-		
+
 		currentBallObject.rigidbody.isKinematic = false;
 		
         Vector3 clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
         Vector3 startPos = currentLevel.ballStart;
-       
+		
+		
         clickPos.z=-5;
         startPos.z=-5;
 
@@ -95,10 +114,14 @@ public class main : MonoBehaviour {
                 clickPos=startPos+(clickPos - startPos).normalized * constants.maxAimRadius;
         }
        
+		// audio.pitch = (clickPos-startPos).magnitude / (constants.maxAimRadius / 2);
+		audio.PlayOneShot(shot);
+		
         float xspd=startPos.x-clickPos.x;
         float yspd=startPos.y-clickPos.y;
 		
 		aiming=false;
+		shooting=true;
 		
 		// We should call a shoot method in ball here, which will apply appropriate force
 		Vector3 force = new Vector3(xspd,yspd,0);

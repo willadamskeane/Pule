@@ -17,6 +17,8 @@ public class level : MonoBehaviour {
 	public GameObject tile;
 	public Camera cam;
 	
+	public GameObject breakingAnimation;
+	
 	void Start(){
 		// LoadLevel (fileName.text);	
 	}
@@ -58,6 +60,7 @@ public class level : MonoBehaviour {
 				tiles[i][j] = Instantiate(tile, new Vector3(i, j, 0), Quaternion.Euler(0,180,0)) as GameObject;
 				tiles[i][j].GetComponent<tile>().level = gameObject;
 				tiles[i][j].GetComponent<tile>().cam = cam;
+				tiles[i][j].GetComponent<tile>().breakingAnimation=breakingAnimation;
 			}
 		}
 	}
