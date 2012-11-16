@@ -30,13 +30,16 @@ public class tile : MonoBehaviour {
 		if(breakAt>0 && Time.time>breakAt){
 			breakAt=0;
 			int randInt=Random.Range (0,20);
+			Debug.Log (randInt);
 			char newType='0';
 			if (randInt>10)
 			{
 				newType='3';
-			}else if(randInt>15){
-				newType='4';	
-			}else if(randInt>18){
+			} 
+			if(randInt>15){
+				newType='4';
+			}
+			if(randInt>18){
 				newType='5';
 			}
 			setType(newType);
