@@ -9,9 +9,11 @@ public class level : MonoBehaviour {
 	string levelName;
 	int height;
 	int width;
+	public int currentScore;
 	int highScore;
 	string highScoreName;
 	int numLives;
+	public int livesLeft;
 	public Vector3 ballStart;
 	GameObject[][] tiles;
 	public GameObject tile;
@@ -31,6 +33,7 @@ public class level : MonoBehaviour {
 		width=ToInt(chars[0])*10+ToInt(chars[1]);
 		height=ToInt(chars[2])*10+ToInt(chars[3]);
 		numLives=ToInt(chars[4]);
+		livesLeft=numLives;
 		Init(width,height);
 		for(int j = height-1; j>=0; j--) {
 			for(int i = 0; i<width; i++) {
@@ -58,11 +61,19 @@ public class level : MonoBehaviour {
 			tiles[i] = new GameObject[h];
 			for(int j = 0; j<h; j++){
 				tiles[i][j] = Instantiate(tile, new Vector3(i, j, 0), Quaternion.Euler(0,180,0)) as GameObject;
-				tiles[i][j].GetComponent<tile>().level = gameObject;
+				tiles[i][j].GetComponent<tile>().currentLevel = this;
 				tiles[i][j].GetComponent<tile>().cam = cam;
 				tiles[i][j].GetComponent<tile>().breakingAnimation=breakingAnimation;
 			}
 		}
+	}
+	
+	public void DestroyLevel(){
+		for(int j = height-1; j>=0; j--) {
+			for(int i = 0; i<width; i++) {
+				Destroy(tiles[i][j]);
+			}
+		}		
 	}
 
 	public int ToInt(char c){

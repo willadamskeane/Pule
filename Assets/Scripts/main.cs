@@ -15,9 +15,11 @@ public class main : MonoBehaviour {
 	
 	bool aiming=false;
 	bool shooting=false;
+	bool postLevel=false;
 	
 	Vector3 targetCamPos;
 	
+	public int score;
 	public GUIStyle scoreStyle;
 	
 	// Use this for initialization
@@ -25,32 +27,55 @@ public class main : MonoBehaviour {
 		
 		currentLevel = cam.GetComponent<level>();
 		currentLevel.LoadLevel(level.text);
-		currentBallObject=(GameObject)Instantiate(ball,currentLevel.ballStart,new Quaternion(0,0,0,0));
-		currentBall=currentBallObject.GetComponent<ball>();
-		currentBallObject.rigidbody.isKinematic=true;
 		Physics.bounceThreshold=0.0f;
 		Time.fixedDeltaTime = 0.005f;
+		Spawn();
 
+	}
+	
+	void Spawn(){
+		if (currentLevel.livesLeft==0){
+			postLevel=true;
+			currentLevel.DestroyLevel();
+			Destroy (currentBallObject);
+		}else{
+			if (currentBallObject){
+				Destroy(currentBallObject);
+				aiming=false;
+				shooting=false;
+			}
+			currentBallObject=(GameObject)Instantiate(ball,currentLevel.ballStart,new Quaternion(0,0,0,0));
+			currentBall=currentBallObject.GetComponent<ball>();
+			currentBallObject.rigidbody.isKinematic=true;
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
-	    if (aiming){
-            if (!line.renderer.enabled) line.renderer.enabled=true;
-		    if (Input.GetMouseButtonUp(0)){
-		      	shoot ();
-		    }
-        }else{
-            if (line.renderer.enabled) line.renderer.enabled=false;    
-        }
-		
-		if(Input.GetMouseButton (0)){
-            aim ();
-		}
-		
-		if (!aiming && (currentLevel.ballStart-currentBallObject.transform.position).magnitude<1){
-			currentBallObject.collider.enabled=true;	
+		if (!postLevel){
+		    if (aiming){
+	            if (!line.renderer.enabled) line.renderer.enabled=true;
+			    if (Input.GetMouseButtonUp(0)){
+			      	shoot ();
+			    }
+	        }else{
+	            if (line.renderer.enabled) line.renderer.enabled=false;    
+	        }
+			
+			if(Input.GetMouseButton (0)){
+	            aim ();
+			}
+			
+			if (!aiming && (currentLevel.ballStart-currentBallObject.transform.position).magnitude<1){
+				currentBallObject.collider.enabled=true;	
+			}
+			
+			if (shooting){
+				if (currentBall.rigidbody.velocity.magnitude<.1 && currentBall.decelerating){
+					Spawn();
+				}
+			}
 		}
 		
 		/*
@@ -58,13 +83,26 @@ public class main : MonoBehaviour {
 			targetCamPos=new Vector3(currentBallObject.transform.position.x,currentBallObject.transform.position.y,-10);	
 			cam.transform.Translate ((targetCamPos.x-cam.transform.position.x)*Time.deltaTime,(targetCamPos.y-cam.transform.position.y)*Time.deltaTime,0);
 			Camera.main.orthographicSize=Camera.main.orthographicSize+(6-Camera.main.orthographicSize)*Time.deltaTime;
-		}*/
+		}
+		*/
 
 	}
 	
 	void OnGUI(){
-		GUI.Label(new Rect(10,10,Screen.width,70),new GUIContent("Score "),scoreStyle);
-		// GUI.Label(new Rect(10,10,200,50),);
+		if (!postLevel){
+			string lifeTerm="shots left";
+			if (currentLevel.livesLeft==1) lifeTerm="shot left";
+			GUI.Label(new Rect(0,0,Screen.width,50),new GUIContent(currentLevel.currentScore.ToString()+" points, "+currentLevel.livesLeft+" "+lifeTerm),scoreStyle);
+			// GUI.Label(new Rect(10,10,200,50),);
+		}else{
+			GUI.Label(new Rect(0,0,Screen.width,Screen.height),new GUIContent("You scored "+currentLevel.currentScore.ToString()+" points!"),scoreStyle);				
+			if(GUI.Button(new Rect(0,0,Screen.width,Screen.height+60),new GUIContent("Restart"),scoreStyle)){
+				postLevel=false;
+				currentLevel = cam.GetComponent<level>();
+				currentLevel.LoadLevel(level.text);
+				Spawn();
+			}
+		}
 		
 	}
 	
@@ -100,7 +138,9 @@ public class main : MonoBehaviour {
     }
 	
 	void shoot(){
-
+		
+		currentLevel.livesLeft--;
+		
 		currentBallObject.rigidbody.isKinematic = false;
 		
         Vector3 clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);

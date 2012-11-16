@@ -9,6 +9,8 @@ public class ball : MonoBehaviour {
 	
 	public bool moving;
 	public bool colliding;
+	public bool decelerating=false;
+	float lastVelocity;
 	
 	void Start () {
 		
@@ -32,6 +34,11 @@ public class ball : MonoBehaviour {
 		if (moving){
 			// transform.Translate(new Vector3(velocity.x,velocity.y,0));
 		}
+		
+		if (rigidbody.velocity.magnitude-lastVelocity<0){
+			decelerating=true;
+		}
+		lastVelocity=rigidbody.velocity.magnitude;
 		
 	} 
 	

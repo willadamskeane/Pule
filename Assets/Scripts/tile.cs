@@ -3,7 +3,7 @@ using System.Collections;
 
 public class tile : MonoBehaviour {
 	
-	public GameObject level;
+	public level currentLevel;
 	public Camera cam;
 	public GameObject breakingAnimation;
 	char type;
@@ -11,6 +11,7 @@ public class tile : MonoBehaviour {
 	float scoringTarget;
 	float breakAt;
 	bool activated=false;
+	bool activeColoring=false;
 	
 	public AudioClip arrow;
 	public AudioClip low;
@@ -42,6 +43,12 @@ public class tile : MonoBehaviour {
 						
 		}
 		
+		if (type=='i'){
+			if (!activated){
+				renderer.material.color =  Color.Lerp (Color.red, Color.green,  Mathf.PingPong (Time.time, constants.activateColorTime) / constants.activateColorTime);
+			}
+		}
+		
 	}
 	
 	public void Activate(GameObject collidingBallObject){
@@ -65,15 +72,19 @@ public class tile : MonoBehaviour {
 			{
 				case '3':
 					audio.PlayOneShot(low);
+					currentLevel.currentScore+=10;
 				break;
 				case '4':
 					audio.PlayOneShot(med);
+					currentLevel.currentScore+=50;
 				break;
 				case '5':
 					audio.PlayOneShot(high);
+					currentLevel.currentScore+=100;
 				break;
 				case 'h':
 					audio.PlayOneShot(high);
+					currentLevel.currentScore+=200;
 				break;
 			}
 		}
@@ -106,12 +117,15 @@ public class tile : MonoBehaviour {
 		
 		if (pushForce.magnitude>0)
 		{
+			// activeColoring=true;
 			audio.PlayOneShot(arrow);
 			collidingBallObject.rigidbody.AddRelativeForce (constants.arrowForceMultiplier*pushForce,ForceMode.Impulse);
 		}
 		
 		if (type=='i'){
-			Instantiate (collidingBallObject,new Vector3(collidingBallObject.transform.position.x-2,collidingBallObject.transform.position.y+2,collidingBallObject.transform.position.z),new Quaternion(0,0,0,0));
+			currentLevel.livesLeft++;
+			activated=true;
+			// Instantiate (collidingBallObject,new Vector3(collidingBallObject.transform.position.x-2,collidingBallObject.transform.position.y+2,collidingBallObject.transform.position.z),new Quaternion(0,0,0,0));
 			setType('0');
 			// collidingBallObject.transform.localScale=new Vector3(constants.ballSize*1.5f,constants.ballSize*1.5f,constants.ballSize*1.5f);
 		}
@@ -131,6 +145,12 @@ public class tile : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other){
+		if (other.tag=="Player"){
+			Activate (other.gameObject);
+		}
+	}
+	
+	void OnTriggerExit(Collider other){
 		if (other.tag=="Player"){
 			Activate (other.gameObject);
 		}
