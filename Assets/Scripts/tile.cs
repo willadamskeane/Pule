@@ -9,6 +9,7 @@ public class tile : MonoBehaviour {
 	bool scoring=false;
 	float scoringTarget;
 	float breakAt;
+	bool activated=false;
 	
 	public AudioClip arrow;
 	public AudioClip low;
@@ -38,7 +39,8 @@ public class tile : MonoBehaviour {
 			breakAt=Time.time+.2f;
 		}
 		
-		if (type=='3' || type=='4' || type=='5'){
+		if (type=='3' || type=='4' || type=='5' && !activated){
+			activated=true;
 			renderer.material.mainTexture = (Texture2D)Resources.Load("Tiles/"+type+"_active",typeof(Texture2D));
 			scoring=true;
 			scoringTarget=Time.time+1;
