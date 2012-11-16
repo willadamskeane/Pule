@@ -51,16 +51,8 @@ public class tile : MonoBehaviour {
 		
 	}
 	
-	public void Activate(GameObject collidingBallObject){
+	public void Activate(GameObject collidingBallObject,bool explode=false){
 		
-		Vector3 pushForce = new Vector3(0,0,0);
-		
-		if (type=='2'){
-			breakAt=Time.time+constants.breakDelay;
-			audio.PlayOneShot(breaking);
-			GameObject bricks=(GameObject)Instantiate(breakingAnimation,transform.position,new Quaternion(0,0,0,0));
-			Destroy(bricks, 1);
-		}
 		
 		if ((type=='3' || type=='4' || type=='5' || type=='h') && !activated){
 			
@@ -89,47 +81,60 @@ public class tile : MonoBehaviour {
 			}
 		}
 		
-		if(type == '9'){
-			pushForce = (new Vector3(0, 1, 0)).normalized;
-		}
 		
-		if(type == 'a'){
-			pushForce = (new Vector3(1, 1, 0)).normalized;
+		if (!explode){
+			
+			if (type=='2'){
+				breakAt=Time.time+constants.breakDelay;
+				audio.PlayOneShot(breaking);
+				GameObject bricks=(GameObject)Instantiate(breakingAnimation,transform.position,new Quaternion(0,0,0,0));
+				Destroy(bricks, 1);
+			}
+			
+			Vector3 pushForce = new Vector3(0,0,0);
+	
+			
+			if(type == '9'){
+				pushForce = (new Vector3(0, 1, 0)).normalized;
+			}
+			
+			if(type == 'a'){
+				pushForce = (new Vector3(1, 1, 0)).normalized;
+			}
+			if(type == 'b'){
+				pushForce = (new Vector3(1, 0, 0)).normalized;
+			}
+			if(type == 'c'){
+				pushForce = (new Vector3(1, -1, 0)).normalized;
+			}
+			if(type == 'd'){
+				pushForce = (new Vector3(0, -1, 0)).normalized;
+			}
+			if(type == 'e'){
+				pushForce = (new Vector3(-1, -1, 0)).normalized;
+			}
+			if(type == 'f'){
+				pushForce = (new Vector3(-1, 0, 0)).normalized;
+			}
+			if(type == 'g'){
+				pushForce = (new Vector3(-1, 1, 0)).normalized;
+			}
+			
+			if (pushForce.magnitude>0)
+			{
+				// activeColoring=true;
+				audio.PlayOneShot(arrow);
+				collidingBallObject.rigidbody.AddRelativeForce (constants.arrowForceMultiplier*pushForce,ForceMode.Impulse);
+			}
+			
+			if (type=='i'){
+				currentLevel.livesLeft++;
+				activated=true;
+				// Instantiate (collidingBallObject,new Vector3(collidingBallObject.transform.position.x-2,collidingBallObject.transform.position.y+2,collidingBallObject.transform.position.z),new Quaternion(0,0,0,0));
+				setType('0');
+				// collidingBallObject.transform.localScale=new Vector3(constants.ballSize*1.5f,constants.ballSize*1.5f,constants.ballSize*1.5f);
+			}
 		}
-		if(type == 'b'){
-			pushForce = (new Vector3(1, 0, 0)).normalized;
-		}
-		if(type == 'c'){
-			pushForce = (new Vector3(1, -1, 0)).normalized;
-		}
-		if(type == 'd'){
-			pushForce = (new Vector3(0, -1, 0)).normalized;
-		}
-		if(type == 'e'){
-			pushForce = (new Vector3(-1, -1, 0)).normalized;
-		}
-		if(type == 'f'){
-			pushForce = (new Vector3(-1, 0, 0)).normalized;
-		}
-		if(type == 'g'){
-			pushForce = (new Vector3(-1, 1, 0)).normalized;
-		}
-		
-		if (pushForce.magnitude>0)
-		{
-			// activeColoring=true;
-			audio.PlayOneShot(arrow);
-			collidingBallObject.rigidbody.AddRelativeForce (constants.arrowForceMultiplier*pushForce,ForceMode.Impulse);
-		}
-		
-		if (type=='i'){
-			currentLevel.livesLeft++;
-			activated=true;
-			// Instantiate (collidingBallObject,new Vector3(collidingBallObject.transform.position.x-2,collidingBallObject.transform.position.y+2,collidingBallObject.transform.position.z),new Quaternion(0,0,0,0));
-			setType('0');
-			// collidingBallObject.transform.localScale=new Vector3(constants.ballSize*1.5f,constants.ballSize*1.5f,constants.ballSize*1.5f);
-		}
-		
 		
 	}
 	

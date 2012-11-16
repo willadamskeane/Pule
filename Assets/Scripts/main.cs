@@ -34,7 +34,7 @@ public class main : MonoBehaviour {
 	}
 	
 	void Spawn(){
-		if (currentLevel.livesLeft==0){
+		if (currentLevel.livesLeft<=0){
 			postLevel=true;
 			currentLevel.DestroyLevel();
 			Destroy (currentBallObject);
@@ -64,7 +64,10 @@ public class main : MonoBehaviour {
 	        }
 			
 			if(Input.GetMouseButton (0)){
-	            aim ();
+	            if (!aiming){
+					Spawn ();	
+				}
+				aim ();
 			}
 			
 			if (!aiming && (currentLevel.ballStart-currentBallObject.transform.position).magnitude<1){
@@ -73,6 +76,7 @@ public class main : MonoBehaviour {
 			
 			if (shooting){
 				if (currentBall.rigidbody.velocity.magnitude<.1 && currentBall.decelerating){
+					currentLevel.Explode(currentBallObject.transform.position);
 					Spawn();
 				}
 			}

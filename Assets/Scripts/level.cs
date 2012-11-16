@@ -7,15 +7,15 @@ public class level : MonoBehaviour {
 	public TextAsset fileName;
 	string levelText;
 	string levelName;
-	int height;
-	int width;
+	public int height;
+	public int width;
 	public int currentScore;
 	int highScore;
 	string highScoreName;
 	int numLives;
 	public int livesLeft;
 	public Vector3 ballStart;
-	GameObject[][] tiles;
+	public GameObject[][] tiles;
 	public GameObject tile;
 	public Camera cam;
 	
@@ -56,6 +56,7 @@ public class level : MonoBehaviour {
 
 	public void Init(int w, int h){
 		// initialize tiles array to blank tiles
+		currentScore=0;
 		tiles = new GameObject[w][];
 		for(int i = 0; i<w; i++){
 			tiles[i] = new GameObject[h];
@@ -78,6 +79,16 @@ public class level : MonoBehaviour {
 
 	public int ToInt(char c){
 		return ((int) c) - ((int) '0');
+	}
+	
+	public void Explode(Vector3 pos){
+		for (int i=0;i<width;i++){
+			for (int j=0;j<height;j++){
+				if ((tiles[i][j].transform.position - pos).magnitude <= 2){
+					tiles[i][j].GetComponent<tile>().Activate(null,true);
+				}
+			}
+		}
 	}
 	
 	/*
