@@ -8,6 +8,7 @@ public class ball : MonoBehaviour {
 	// Vector3 velocity;
 	
 	public bool moving;
+	public bool colliding;
 	
 	void Start () {
 		
@@ -21,7 +22,7 @@ public class ball : MonoBehaviour {
 	
 		moving=true;	
 		// velocity=force;
-		rigidbody.AddForce(force*5,ForceMode.Impulse);
+		rigidbody.AddForce(force*constants.forceMultiplier,ForceMode.Impulse);
 		
 	}
 	

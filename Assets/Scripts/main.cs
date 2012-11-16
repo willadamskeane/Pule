@@ -20,6 +20,10 @@ public class main : MonoBehaviour {
 		currentLevel.LoadLevel(level.text);
 		currentBallObject=(GameObject)Instantiate(ball,currentLevel.ballStart,new Quaternion(0,0,0,0));
 		currentBall=currentBallObject.GetComponent<ball>();
+		currentBallObject.rigidbody.isKinematic=true;
+		Physics.bounceThreshold=0;
+		Time.fixedDeltaTime = 0.005f;
+
 	}
 	
 	// Update is called once per frame
@@ -37,13 +41,22 @@ public class main : MonoBehaviour {
 		if(Input.GetMouseButton (0)){
             aim ();
 		}
+		
+		if (!aiming && (currentLevel.ballStart-currentBallObject.transform.position).magnitude<1){
+			currentBallObject.collider.enabled=true;	
+		}
 
+	}
+	
+	void OnGUI(){
+		GUI.Label(new Rect(10,10,100,20),new GUIContent("Lives Left: "));			
 	}
 	
     void aim(){
         
 		aiming=true;
-		currentBallObject.rigidbody.isKinematic = true; // stop!
+		currentBallObject.rigidbody.isKinematic = true;
+		currentBallObject.collider.enabled=false;
 		currentBall.moving=false;
 		
         Vector3 clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
@@ -52,8 +65,8 @@ public class main : MonoBehaviour {
         clickPos.z=-5;
         startPos.z=-5;
 
-        if((clickPos-startPos).magnitude > 5){
-        	clickPos=startPos+(clickPos - startPos).normalized*5;
+        if((clickPos-startPos).magnitude > constants.maxAimRadius){
+        	clickPos=startPos+(clickPos - startPos).normalized*constants.maxAimRadius;
         }
        
         currentBallObject.transform.position = new Vector3(clickPos.x,clickPos.y,currentBall.transform.position.z);
@@ -70,14 +83,16 @@ public class main : MonoBehaviour {
 	
 	void shoot(){
 		
+		currentBallObject.rigidbody.isKinematic = false;
+		
         Vector3 clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
         Vector3 startPos = currentLevel.ballStart;
        
         clickPos.z=-5;
         startPos.z=-5;
 
-        if((clickPos-startPos).magnitude > 5){
-                clickPos=startPos+(clickPos - startPos).normalized;
+        if((clickPos-startPos).magnitude > constants.maxAimRadius){
+                clickPos=startPos+(clickPos - startPos).normalized * constants.maxAimRadius;
         }
        
         float xspd=startPos.x-clickPos.x;

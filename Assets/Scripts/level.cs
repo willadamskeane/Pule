@@ -37,6 +37,9 @@ public class level : MonoBehaviour {
 				if(type == '8'){
 					ballStart = new Vector3(i, j, 0);
 				}
+				if (type == '1' || type == '2'){
+					tiles[i][j].collider.isTrigger=false;	
+				}
 			}		
 		}
 		float oSize=width/3;
@@ -52,7 +55,7 @@ public class level : MonoBehaviour {
 		for(int i = 0; i<w; i++){
 			tiles[i] = new GameObject[h];
 			for(int j = 0; j<h; j++){
-				tiles[i][j] = Instantiate(tile, new Vector3(i, j, 0), new Quaternion(0, 0, 0, 0)) as GameObject;
+				tiles[i][j] = Instantiate(tile, new Vector3(i, j, 0), Quaternion.Euler(0,180,0)) as GameObject;
 				tiles[i][j].GetComponent<tile>().level = gameObject;
 				tiles[i][j].GetComponent<tile>().cam = cam;
 			}
